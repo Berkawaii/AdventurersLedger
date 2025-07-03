@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../constants/app_theme.dart';
 import '../models/character.dart';
 import '../models/equipment.dart';
 import '../view_models/character_view_model.dart';
@@ -48,6 +49,7 @@ class _CharacterDetailPageState extends State<CharacterDetailPage>
         final character = viewModel.selectedCharacter!;
 
         return Scaffold(
+          backgroundColor: AppTheme.backgroundDark,
           appBar: AppBar(
             title: Text(character.name),
             actions: [

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import 'constants/app_theme.dart';
 import 'view_models/character_view_model.dart';
 import 'view_models/class_view_model.dart';
 import 'view_models/race_view_model.dart';
@@ -38,18 +39,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Adventurer\'s Ledger',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-          useMaterial3: true,
-        ),
-        darkTheme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blue,
-            brightness: Brightness.dark,
-          ),
-          useMaterial3: true,
-        ),
-        themeMode: ThemeMode.system,
+        theme: AppTheme.fantasyTheme,
         home: const HomePage(),
       ),
     );
