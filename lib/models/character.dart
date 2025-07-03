@@ -21,7 +21,9 @@ class Character {
 
   // Derived stats
   int hitPoints;
+  int currentHitPoints; // Mevcut can puanı
   int armorClass;
+  int inspiration; // Inspiration puanı
 
   // Other important character info
   String? background;
@@ -63,7 +65,9 @@ class Character {
     this.wisdom = 10,
     this.charisma = 10,
     this.hitPoints = 0,
+    this.currentHitPoints = 0,
     this.armorClass = 10,
+    this.inspiration = 0,
     this.background,
     this.alignment,
     List<String>? equipment,
@@ -92,6 +96,11 @@ class Character {
   void calculateDerivedStats() {
     // Simple HP calculation (can be more complex based on class/level/etc)
     hitPoints = level * (8 + getAbilityModifier(constitution));
+
+    // Mevcut can puanını tam can olarak ayarla (yeni karakter oluşturulduğunda)
+    if (currentHitPoints == 0) {
+      currentHitPoints = hitPoints;
+    }
 
     // Simple AC calculation (10 + DEX modifier)
     armorClass = 10 + getAbilityModifier(dexterity);
@@ -199,7 +208,9 @@ class Character {
     int? wisdom,
     int? charisma,
     int? hitPoints,
+    int? currentHitPoints,
     int? armorClass,
+    int? inspiration,
     String? background,
     String? alignment,
     List<String>? equipment,
@@ -223,7 +234,9 @@ class Character {
       wisdom: wisdom ?? this.wisdom,
       charisma: charisma ?? this.charisma,
       hitPoints: hitPoints ?? this.hitPoints,
+      currentHitPoints: currentHitPoints ?? this.currentHitPoints,
       armorClass: armorClass ?? this.armorClass,
+      inspiration: inspiration ?? this.inspiration,
       background: background ?? this.background,
       alignment: alignment ?? this.alignment,
       equipment: equipment ?? this.equipment,

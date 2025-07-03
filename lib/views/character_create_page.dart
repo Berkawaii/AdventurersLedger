@@ -836,9 +836,13 @@ class _CharacterCreatePageState extends State<CharacterCreatePage> {
   }
 
   Widget _buildReviewPage() {
-    return Consumer<CharacterViewModel>(
-      builder: (context, characterViewModel, child) {
-        // Update character model with form values
+    // Update character model with form values only when page is active
+    if (_currentStep == 3) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final characterViewModel = Provider.of<CharacterViewModel>(
+          context,
+          listen: false,
+        );
         characterViewModel.updateNewCharacterField(
           'name',
           _nameController.text,
@@ -882,7 +886,11 @@ class _CharacterCreatePageState extends State<CharacterCreatePage> {
           'backstory',
           _backstoryController.text,
         );
+      });
+    }
 
+    return Consumer<CharacterViewModel>(
+      builder: (context, characterViewModel, child) {
         final character = characterViewModel.newCharacter;
 
         return SingleChildScrollView(
@@ -1055,6 +1063,44 @@ class _CharacterCreatePageState extends State<CharacterCreatePage> {
                     ],
                   ),
                 ),
+
+                // Backstory Section
+                const SizedBox(height: 20),
+
+                if (_backstoryController.text.isNotEmpty)
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: AppTheme.backgroundDark.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: AppTheme.secondaryColor.withOpacity(0.5),
+                        width: 1,
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Character Backstory:',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.secondaryColor,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          _backstoryController.text,
+                          style: TextStyle(
+                            color: AppTheme.textLight,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
 
                 const SizedBox(height: 20),
 

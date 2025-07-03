@@ -135,6 +135,103 @@ class _CharacterDetailPageState extends State<CharacterDetailPage>
           ),
           const SizedBox(height: 16),
 
+          // HP Management
+          Card(
+            color: AppTheme.accentColor,
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: BorderSide(
+                color: AppTheme.secondaryColor.withOpacity(0.5),
+                width: 1.5,
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.favorite, color: AppTheme.primaryColor),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Hit Points',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.secondaryColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '${character.currentHitPoints} / ${character.hitPoints}',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color:
+                          character.currentHitPoints < character.hitPoints / 4
+                              ? Colors.red
+                              : character.currentHitPoints <
+                                  character.hitPoints / 2
+                              ? Colors.orange
+                              : AppTheme.secondaryColor,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          _updateHP(context, character.id, -1);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppTheme.primaryColor,
+                          shape: const CircleBorder(),
+                          minimumSize: const Size(40, 40),
+                        ),
+                        child: const Icon(Icons.remove, color: Colors.white),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: () {
+                          _showHPDialog(context, character);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppTheme.secondaryColor,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                        ),
+                        child: Text(
+                          'Update HP',
+                          style: TextStyle(color: AppTheme.backgroundDark),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: () {
+                          _updateHP(context, character.id, 1);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppTheme.primaryColor,
+                          shape: const CircleBorder(),
+                          minimumSize: const Size(40, 40),
+                        ),
+                        child: const Icon(Icons.add, color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+
           // Basic stats
           Card(
             child: Padding(
@@ -142,11 +239,81 @@ class _CharacterDetailPageState extends State<CharacterDetailPage>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _buildStatColumn('HP', character.hitPoints.toString()),
                   _buildStatColumn('AC', character.armorClass.toString()),
                   _buildStatColumn(
                     'Prof',
                     '+${(character.level / 4).ceil() + 1}',
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Inspiration Management
+          Card(
+            color: AppTheme.accentColor,
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: BorderSide(
+                color: AppTheme.secondaryColor.withOpacity(0.5),
+                width: 1.5,
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.auto_awesome, color: AppTheme.secondaryColor),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Inspiration',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.secondaryColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(3, (index) {
+                      bool isActive = index < character.inspiration;
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: IconButton(
+                          icon: Icon(
+                            isActive ? Icons.star : Icons.star_border,
+                            size: 32,
+                          ),
+                          color:
+                              isActive
+                                  ? AppTheme.secondaryColor
+                                  : AppTheme.textLight.withOpacity(0.5),
+                          onPressed: () {
+                            _updateInspiration(
+                              context,
+                              character.id,
+                              isActive ? index : index + 1,
+                            );
+                          },
+                        ),
+                      );
+                    }),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Tap to set inspiration level',
+                    style: TextStyle(
+                      color: AppTheme.textLight.withOpacity(0.6),
+                      fontSize: 12,
+                    ),
                   ),
                 ],
               ),
@@ -177,6 +344,51 @@ class _CharacterDetailPageState extends State<CharacterDetailPage>
               ),
             ),
           ),
+          const SizedBox(height: 16),
+
+          // Character backstory section
+          if (character.additionalTraits.containsKey('backstory') &&
+              character.additionalTraits['backstory'] != null &&
+              character.additionalTraits['backstory'].toString().isNotEmpty)
+            Card(
+              color: AppTheme.accentColor.withOpacity(0.9),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: BorderSide(
+                  color: AppTheme.secondaryColor.withOpacity(0.5),
+                  width: 1,
+                ),
+              ),
+              elevation: 4,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Backstory',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.secondaryColor,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Divider(height: 1, color: AppTheme.primaryColor),
+                    const SizedBox(height: 12),
+                    Text(
+                      character.additionalTraits['backstory'].toString(),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: AppTheme.textLight,
+                        fontStyle: FontStyle.italic,
+                        height: 1.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -1054,6 +1266,95 @@ class _CharacterDetailPageState extends State<CharacterDetailPage>
             ],
           ),
     );
+  }
+
+  // Update character's HP
+  void _updateHP(BuildContext context, String characterId, int amount) async {
+    final viewModel = Provider.of<CharacterViewModel>(context, listen: false);
+    await viewModel.updateCharacterHP(characterId, amount);
+  }
+
+  // Show HP update dialog
+  void _showHPDialog(BuildContext context, Character character) {
+    final TextEditingController controller = TextEditingController();
+    final viewModel = Provider.of<CharacterViewModel>(context, listen: false);
+
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            backgroundColor: AppTheme.accentColor,
+            title: Text(
+              'Update Hit Points',
+              style: TextStyle(color: AppTheme.secondaryColor),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Current HP: ${character.currentHitPoints}/${character.hitPoints}',
+                  style: TextStyle(color: AppTheme.textLight),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: controller,
+                  decoration: InputDecoration(
+                    labelText: 'New HP Value',
+                    labelStyle: TextStyle(color: AppTheme.textLight),
+                    border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: AppTheme.backgroundDark.withOpacity(0.3),
+                  ),
+                  style: TextStyle(color: AppTheme.textLight),
+                  keyboardType: TextInputType.number,
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(color: AppTheme.textLight),
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  // Parse the new HP value
+                  int? newHp = int.tryParse(controller.text);
+                  if (newHp != null) {
+                    // Calculate the difference from current HP
+                    int diff = newHp - character.currentHitPoints;
+                    viewModel.updateCharacterHP(character.id, diff);
+                  }
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  'Update',
+                  style: TextStyle(color: AppTheme.secondaryColor),
+                ),
+              ),
+            ],
+          ),
+    );
+  }
+
+  // Update character's inspiration
+  void _updateInspiration(
+    BuildContext context,
+    String characterId,
+    int newValue,
+  ) async {
+    final viewModel = Provider.of<CharacterViewModel>(context, listen: false);
+    final character = viewModel.selectedCharacter;
+
+    if (character != null) {
+      // Calculate the difference to reach the new value
+      int diff = newValue - character.inspiration;
+      await viewModel.updateCharacterInspiration(characterId, diff);
+    }
   }
 
   String _formatDate(DateTime date) {

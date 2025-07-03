@@ -308,6 +308,50 @@ class CharacterViewModel extends ChangeNotifier {
     }
   }
 
+  /// Update a character's current hit points
+  Future<bool> updateCharacterHP(String characterId, int amount) async {
+    try {
+      final character = _characters.firstWhere((c) => c.id == characterId);
+
+      // Calculate new hit points, ensuring it doesn't exceed max or go below 0
+      final newHP = (character.currentHitPoints + amount).clamp(
+        0,
+        character.hitPoints,
+      );
+
+      // Create an updated character
+      final updatedCharacter = character.copyWith(currentHitPoints: newHP);
+
+      // Update the character
+      return await updateCharacter(updatedCharacter);
+    } catch (e) {
+      _errorMessage = 'Error updating hit points: $e';
+      return false;
+    }
+  }
+
+  /// Update a character's inspiration points
+  Future<bool> updateCharacterInspiration(
+    String characterId,
+    int amount,
+  ) async {
+    try {
+      final character = _characters.firstWhere((c) => c.id == characterId);
+
+      // Calculate new inspiration, ensuring it doesn't go below 0
+      final newInspiration = (character.inspiration + amount).clamp(0, 3);
+
+      // Create an updated character
+      final updatedCharacter = character.copyWith(inspiration: newInspiration);
+
+      // Update the character
+      return await updateCharacter(updatedCharacter);
+    } catch (e) {
+      _errorMessage = 'Error updating inspiration: $e';
+      return false;
+    }
+  }
+
   // Helper method to set loading state
   void _setLoading(bool loading) {
     _isLoading = loading;
@@ -352,6 +396,10 @@ class CharacterViewModel extends ChangeNotifier {
         break;
       case 'alignment':
         _newCharacter.alignment = value;
+        break;
+      case 'backstory':
+        // Store backstory in additionalTraits map since it's not a direct field
+        _newCharacter.additionalTraits['backstory'] = value;
         break;
     }
 
