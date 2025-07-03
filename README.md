@@ -36,7 +36,7 @@ Adventurer's Ledger is built using modern Flutter development practices:
 1. Install Flutter SDK on your machine (minimum version: 3.7)
 2. Clone the repository:
    ```
-   git clone https://github.com/yourusername/adventurers_ledger.git
+   git clone https://github.com/berkawaii/adventurers_ledger.git
    ```
 3. Install dependencies:
    ```
