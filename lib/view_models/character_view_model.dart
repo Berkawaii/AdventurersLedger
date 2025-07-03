@@ -401,6 +401,12 @@ class CharacterViewModel extends ChangeNotifier {
         // Store backstory in additionalTraits map since it's not a direct field
         _newCharacter.additionalTraits['backstory'] = value;
         break;
+      case 'skills':
+        _newCharacter.skills = List<String>.from(value);
+        break;
+      case 'proficiencies':
+        _newCharacter.proficiencies = List<String>.from(value);
+        break;
     }
 
     notifyListeners();

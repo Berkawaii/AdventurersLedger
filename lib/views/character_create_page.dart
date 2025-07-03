@@ -40,6 +40,10 @@ class _CharacterCreatePageState extends State<CharacterCreatePage> {
   String? _selectedAlignment;
   final _backstoryController = TextEditingController();
 
+  // Skills and proficiencies
+  List<String> _selectedSkills = [];
+  List<String> _selectedProficiencies = [];
+
   @override
   void initState() {
     super.initState();
@@ -125,6 +129,11 @@ class _CharacterCreatePageState extends State<CharacterCreatePage> {
       characterViewModel.updateNewCharacterField(
         'backstory',
         _backstoryController.text,
+      );
+      characterViewModel.updateNewCharacterField('skills', _selectedSkills);
+      characterViewModel.updateNewCharacterField(
+        'proficiencies',
+        _selectedProficiencies,
       );
 
       final success = await characterViewModel.saveNewCharacter();
@@ -829,6 +838,78 @@ class _CharacterCreatePageState extends State<CharacterCreatePage> {
               style: TextStyle(color: AppTheme.textLight),
               maxLines: 5,
             ),
+
+            const SizedBox(height: 20),
+
+            // Skills & Proficiencies Section
+            Text(
+              'Skills & Proficiencies',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.secondaryColor,
+              ),
+            ),
+            const SizedBox(height: 10),
+
+            // Skills Section
+            Text(
+              'Skills (Select the skills your character is proficient in)',
+              style: TextStyle(fontSize: 14, color: AppTheme.textLight),
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8.0,
+              runSpacing: 8.0,
+              children: [
+                _buildSkillChip('Acrobatics', 'DEX'),
+                _buildSkillChip('Animal Handling', 'WIS'),
+                _buildSkillChip('Arcana', 'INT'),
+                _buildSkillChip('Athletics', 'STR'),
+                _buildSkillChip('Deception', 'CHA'),
+                _buildSkillChip('History', 'INT'),
+                _buildSkillChip('Insight', 'WIS'),
+                _buildSkillChip('Intimidation', 'CHA'),
+                _buildSkillChip('Investigation', 'INT'),
+                _buildSkillChip('Medicine', 'WIS'),
+                _buildSkillChip('Nature', 'INT'),
+                _buildSkillChip('Perception', 'WIS'),
+                _buildSkillChip('Performance', 'CHA'),
+                _buildSkillChip('Persuasion', 'CHA'),
+                _buildSkillChip('Religion', 'INT'),
+                _buildSkillChip('Sleight of Hand', 'DEX'),
+                _buildSkillChip('Stealth', 'DEX'),
+                _buildSkillChip('Survival', 'WIS'),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+
+            // Proficiencies Section
+            Text(
+              'Proficiencies (Select tool and weapon proficiencies)',
+              style: TextStyle(fontSize: 14, color: AppTheme.textLight),
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8.0,
+              runSpacing: 8.0,
+              children: [
+                _buildProficiencyChip('Simple Weapons'),
+                _buildProficiencyChip('Martial Weapons'),
+                _buildProficiencyChip('Light Armor'),
+                _buildProficiencyChip('Medium Armor'),
+                _buildProficiencyChip('Heavy Armor'),
+                _buildProficiencyChip('Shields'),
+                _buildProficiencyChip('Thieves\' Tools'),
+                _buildProficiencyChip('Musical Instruments'),
+                _buildProficiencyChip('Herbalism Kit'),
+                _buildProficiencyChip('Artisan\'s Tools'),
+                _buildProficiencyChip('Disguise Kit'),
+                _buildProficiencyChip('Forgery Kit'),
+                _buildProficiencyChip('Navigator\'s Tools'),
+              ],
+            ),
           ],
         ),
       ),
@@ -885,6 +966,11 @@ class _CharacterCreatePageState extends State<CharacterCreatePage> {
         characterViewModel.updateNewCharacterField(
           'backstory',
           _backstoryController.text,
+        );
+        characterViewModel.updateNewCharacterField('skills', _selectedSkills);
+        characterViewModel.updateNewCharacterField(
+          'proficiencies',
+          _selectedProficiencies,
         );
       });
     }
@@ -1060,6 +1146,88 @@ class _CharacterCreatePageState extends State<CharacterCreatePage> {
                           ),
                         ],
                       ),
+
+                      // Skills & Proficiencies display
+                      const SizedBox(height: 16),
+
+                      if (_selectedSkills.isNotEmpty) ...[
+                        Text(
+                          'Skills:',
+                          style: TextStyle(color: AppTheme.textLight),
+                        ),
+                        const SizedBox(height: 4),
+                        Wrap(
+                          spacing: 4,
+                          runSpacing: 4,
+                          children:
+                              _selectedSkills
+                                  .map(
+                                    (skill) => Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 2,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: AppTheme.secondaryColor
+                                            .withOpacity(0.2),
+                                        borderRadius: BorderRadius.circular(4),
+                                        border: Border.all(
+                                          color: AppTheme.secondaryColor
+                                              .withOpacity(0.5),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        skill,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: AppTheme.secondaryColor,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
+                        ),
+                      ],
+
+                      if (_selectedProficiencies.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          'Proficiencies:',
+                          style: TextStyle(color: AppTheme.textLight),
+                        ),
+                        const SizedBox(height: 4),
+                        Wrap(
+                          spacing: 4,
+                          runSpacing: 4,
+                          children:
+                              _selectedProficiencies
+                                  .map(
+                                    (prof) => Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 2,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: AppTheme.primaryColor
+                                            .withOpacity(0.2),
+                                        borderRadius: BorderRadius.circular(4),
+                                        border: Border.all(
+                                          color: AppTheme.primaryColor
+                                              .withOpacity(0.5),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        prof,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: AppTheme.textLight,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -1166,6 +1334,82 @@ class _CharacterCreatePageState extends State<CharacterCreatePage> {
           ),
         ],
       ),
+    );
+  }
+
+  // Helper method to build a skill chip
+  Widget _buildSkillChip(String skillName, String ability) {
+    final bool isSelected = _selectedSkills.contains(skillName);
+
+    return FilterChip(
+      label: Text(
+        "$skillName ($ability)",
+        style: TextStyle(
+          color: isSelected ? AppTheme.backgroundDark : AppTheme.textLight,
+          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+        ),
+      ),
+      selected: isSelected,
+      selectedColor: AppTheme.secondaryColor,
+      backgroundColor: AppTheme.accentColor.withOpacity(0.5),
+      checkmarkColor: AppTheme.backgroundDark,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: BorderSide(
+          color:
+              isSelected
+                  ? AppTheme.secondaryColor
+                  : AppTheme.primaryColor.withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      onSelected: (bool selected) {
+        setState(() {
+          if (selected) {
+            _selectedSkills.add(skillName);
+          } else {
+            _selectedSkills.remove(skillName);
+          }
+        });
+      },
+    );
+  }
+
+  // Helper method to build a proficiency chip
+  Widget _buildProficiencyChip(String proficiencyName) {
+    final bool isSelected = _selectedProficiencies.contains(proficiencyName);
+
+    return FilterChip(
+      label: Text(
+        proficiencyName,
+        style: TextStyle(
+          color: isSelected ? AppTheme.backgroundDark : AppTheme.textLight,
+          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+        ),
+      ),
+      selected: isSelected,
+      selectedColor: AppTheme.secondaryColor,
+      backgroundColor: AppTheme.accentColor.withOpacity(0.5),
+      checkmarkColor: AppTheme.backgroundDark,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: BorderSide(
+          color:
+              isSelected
+                  ? AppTheme.secondaryColor
+                  : AppTheme.primaryColor.withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      onSelected: (bool selected) {
+        setState(() {
+          if (selected) {
+            _selectedProficiencies.add(proficiencyName);
+          } else {
+            _selectedProficiencies.remove(proficiencyName);
+          }
+        });
+      },
     );
   }
 
