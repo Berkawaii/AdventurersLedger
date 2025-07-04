@@ -4,7 +4,7 @@
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
 <p align="center">
-  <img src="assets/images/fantasy_background.jpg" alt="Adventurer's Ledger" width="600" style="border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
+  <img src="assets/images/adventurersLedger.png" alt="Adventurer's Ledger" width="600" style="border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
 </p>
 
 ## 📜 Your Digital Companion for Epic Adventures

@@ -6,7 +6,7 @@ import '../constants/icon_helper.dart';
 import '../view_models/character_view_model.dart';
 import '../widgets/dice_roller_widget.dart';
 import 'character_create_page.dart';
-import 'character_detail_page.dart';
+import 'character/character_detail_page.dart';
 import 'reference_page.dart';
 
 class HomePage extends StatefulWidget {
