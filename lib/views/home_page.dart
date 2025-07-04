@@ -4,12 +4,13 @@ import 'package:provider/provider.dart';
 import '../constants/app_theme.dart';
 import '../constants/icon_helper.dart';
 import '../view_models/character_view_model.dart';
+import '../widgets/dice_roller_widget.dart';
 import 'character_create_page.dart';
 import 'character_detail_page.dart';
 import 'reference_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -38,7 +39,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('Adventurer\'s Ledger'),
         flexibleSpace: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [AppTheme.accentColor, AppTheme.backgroundDark],
               begin: Alignment.topCenter,
@@ -46,12 +47,27 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Image.asset(
+              'assets/icons/d20.png',
+              width: 24,
+              height: 24,
+              color: AppTheme.textLight,
+            ),
+            tooltip: 'Roll Dice',
+            onPressed: () async {
+              // Show dice roller dialog
+              await showDiceRoller(context);
+            },
+          ),
+        ],
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: AppTheme.backgroundDark,
           image: DecorationImage(
-            image: const AssetImage('assets/images/fantasy_background.jpg'),
+            image: AssetImage('assets/images/fantasy_background.jpg'),
             fit: BoxFit.cover,
             opacity: 0.2,
             colorFilter: ColorFilter.mode(
@@ -107,11 +123,11 @@ class _HomePageState extends State<HomePage> {
           _currentIndex == 0
               ? FloatingActionButton(
                 backgroundColor: AppTheme.primaryColor,
-                child: Icon(Icons.add, color: AppTheme.textLight),
+                child: const Icon(Icons.add, color: AppTheme.textLight),
                 elevation: 6,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16.0),
-                  side: BorderSide(color: AppTheme.secondaryColor, width: 1),
+                  side: const BorderSide(color: AppTheme.secondaryColor, width: 1),
                 ),
                 onPressed: () {
                   Navigator.push(
@@ -135,7 +151,7 @@ class CharacterListPage extends StatelessWidget {
     return Consumer<CharacterViewModel>(
       builder: (context, viewModel, child) {
         if (viewModel.isLoading) {
-          return Center(
+          return const Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -145,7 +161,7 @@ class CharacterListPage extends StatelessWidget {
                   ),
                   strokeWidth: 3,
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 Text(
                   'Loading your adventure...',
                   style: TextStyle(
@@ -176,13 +192,13 @@ class CharacterListPage extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.error_outline,
                     size: 60,
                     color: AppTheme.primaryColor,
                   ),
                   const SizedBox(height: 16),
-                  Text(
+                  const Text(
                     'A challenge has appeared!',
                     style: TextStyle(
                       fontSize: 20,
@@ -194,7 +210,7 @@ class CharacterListPage extends StatelessWidget {
                   Text(
                     'Error: ${viewModel.errorMessage}',
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16, color: AppTheme.textLight),
+                    style: const TextStyle(fontSize: 16, color: AppTheme.textLight),
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton.icon(
@@ -232,13 +248,13 @@ class CharacterListPage extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.person_add_alt_1_rounded,
                     size: 60,
                     color: AppTheme.secondaryColor,
                   ),
                   const SizedBox(height: 16),
-                  Text(
+                  const Text(
                     'Your adventure awaits!',
                     style: TextStyle(
                       fontSize: 20,
@@ -247,7 +263,7 @@ class CharacterListPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Text(
+                  const Text(
                     'Create your first character to begin your journey',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 16, color: AppTheme.textLight),
@@ -322,7 +338,7 @@ class CharacterListPage extends StatelessWidget {
                   ),
                   title: Text(
                     character.name,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: AppTheme.secondaryColor,
                       fontWeight: FontWeight.bold,
                       fontSize: 16.0,
@@ -330,9 +346,9 @@ class CharacterListPage extends StatelessWidget {
                   ),
                   subtitle: Text(
                     '${character.race} ${character.characterClass} (Level ${character.level})',
-                    style: TextStyle(color: AppTheme.textLight, fontSize: 14.0),
+                    style: const TextStyle(color: AppTheme.textLight, fontSize: 14.0),
                   ),
-                  trailing: Icon(
+                  trailing: const Icon(
                     Icons.chevron_right,
                     color: AppTheme.secondaryColor,
                   ),

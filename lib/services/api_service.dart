@@ -247,7 +247,23 @@ class ApiService {
 
   // Fetch specific monster details
   Future<Map<String, dynamic>> fetchMonsterDetails(String index) async {
-    return fetchFromDnd5eApi('/api/monsters/$index');
+    try {
+      // First try D&D 5e API
+      log('Fetching monster details from D&D 5e API: $index');
+      return await fetchFromDnd5eApi('/api/monsters/$index');
+    } catch (e) {
+      // If D&D 5e API fails, try Open5e API
+      log('D&D 5e API failed for monster: $index. Trying Open5e API...');
+      try {
+        final data = await fetchFromOpen5eApi('/monsters/$index');
+        log('Successfully fetched monster from Open5e API: ${data['name']}');
+        return data;
+      } catch (open5eError) {
+        // If both APIs fail, rethrow the original error
+        log('Open5e API also failed for monster: $index');
+        throw Exception('Monster not found in either API source: $e');
+      }
+    }
   }
 
   // Fetch backgrounds from Open5e

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:async';
 
 import '../constants/app_theme.dart';
 import '../models/character.dart';
 import '../models/equipment.dart';
 import '../view_models/character_view_model.dart';
 import '../view_models/equipment_view_model.dart';
-import './spell_detail_page.dart';
+import '../view_models/spell_view_model.dart';
 
 class CharacterDetailPage extends StatefulWidget {
   final String characterId;
@@ -798,12 +799,121 @@ class _CharacterDetailPageState extends State<CharacterDetailPage>
 
   // Method to show spell details when clicked
   void _showSpellDetails(String spellName) {
-    // Navigate to spell detail page
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => SpellDetailPage(spellName: spellName),
-      ),
+    // Create a local SpellViewModel instead of using Provider
+    final spellViewModel = SpellViewModel();
+
+    // Show loading dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder:
+          (context) => const AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 16),
+                Text("Loading spell details..."),
+              ],
+            ),
+          ),
     );
+
+    try {
+      // Load detailed spell info by name
+      spellViewModel.loadSpellDetailsByName(spellName).then((_) {
+        // Close loading dialog
+        if (context.mounted) {
+          Navigator.of(context).pop();
+        }
+
+        if (spellViewModel.selectedSpell != null && context.mounted) {
+          final spell = spellViewModel.selectedSpell!;
+
+          // Show spell details
+          showDialog(
+            context: context,
+            builder:
+                (context) => AlertDialog(
+                  title: Text(spell.name),
+                  content: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (spell.level != null)
+                          _buildDetailRow("Level:", spell.level!),
+                        if (spell.school != null)
+                          _buildDetailRow("School:", spell.school!),
+                        if (spell.castingTime != null)
+                          _buildDetailRow("Casting Time:", spell.castingTime!),
+                        if (spell.range != null)
+                          _buildDetailRow("Range:", spell.range!),
+                        if (spell.duration != null)
+                          _buildDetailRow("Duration:", spell.duration!),
+                        if (spell.components != null &&
+                            spell.components!.isNotEmpty)
+                          _buildDetailRow(
+                            "Components:",
+                            spell.components!.join(", "),
+                          ),
+                        if (spell.material != null)
+                          _buildDetailRow("Materials:", spell.material!),
+                        const Divider(),
+                        if (spell.description != null) ...[
+                          const Text(
+                            "Description:",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(spell.description!),
+                        ],
+                        if (spell.higherLevel != null) ...[
+                          const SizedBox(height: 8),
+                          const Text(
+                            "At Higher Levels:",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(spell.higherLevel!),
+                        ],
+                        if (spell.classes != null &&
+                            spell.classes!.isNotEmpty) ...[
+                          const SizedBox(height: 8),
+                          const Text(
+                            "Classes:",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(spell.classes!.join(", ")),
+                        ],
+                      ],
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text("Close"),
+                    ),
+                  ],
+                ),
+          );
+        } else if (context.mounted) {
+          // Show error if spell details not found
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Could not find details for $spellName")),
+          );
+        }
+      });
+    } catch (e) {
+      // Close loading dialog and show error
+      if (context.mounted) {
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error loading spell details: $e")),
+        );
+      }
+    }
   }
 
   Widget _buildDetailRow(String label, String value) {
@@ -922,6 +1032,7 @@ class _CharacterDetailPageState extends State<CharacterDetailPage>
     );
     final equipmentViewModel = EquipmentViewModel();
     bool isManualEntry = true;
+    Timer? _debounce;
 
     showDialog(
       context: context,
@@ -980,6 +1091,21 @@ class _CharacterDetailPageState extends State<CharacterDetailPage>
                             );
                           }
 
+                          // Filter equipment based on search text
+                          final filteredEquipment =
+                              equipmentController.text.isEmpty
+                                  ? equipmentViewModel.equipment
+                                  : equipmentViewModel.equipment
+                                      .where(
+                                        (equipment) => equipment.name
+                                            .toLowerCase()
+                                            .contains(
+                                              equipmentController.text
+                                                  .toLowerCase(),
+                                            ),
+                                      )
+                                      .toList();
+
                           return SizedBox(
                             width: double.maxFinite,
                             height: 300,
@@ -991,36 +1117,43 @@ class _CharacterDetailPageState extends State<CharacterDetailPage>
                                     labelText: 'Search Equipment',
                                     prefixIcon: Icon(Icons.search),
                                   ),
-                                  onChanged: (_) => setState(() {}),
+                                  onChanged: (value) {
+                                    // Debounce logic
+                                    if (_debounce?.isActive ?? false) {
+                                      _debounce!.cancel();
+                                    }
+
+                                    // Wait 500ms before applying the filter
+                                    _debounce = Timer(
+                                      const Duration(milliseconds: 500),
+                                      () {
+                                        setState(() {
+                                          // Empty setState will rebuild with new filter
+                                        });
+                                      },
+                                    );
+                                  },
                                 ),
                                 const SizedBox(height: 8),
                                 Expanded(
                                   child: ListView.builder(
-                                    itemCount:
-                                        equipmentViewModel.equipment.length,
+                                    itemCount: filteredEquipment.length,
                                     itemBuilder: (context, index) {
-                                      final item =
-                                          equipmentViewModel.equipment[index];
-                                      final searchTerm =
-                                          equipmentController.text
-                                              .toLowerCase();
-                                      if (searchTerm.isNotEmpty &&
-                                          !item.name.toLowerCase().contains(
-                                            searchTerm,
-                                          )) {
-                                        return const SizedBox.shrink();
-                                      }
-
+                                      final equipment =
+                                          filteredEquipment[index];
                                       return ListTile(
-                                        title: Text(item.name),
+                                        title: Text(equipment.name),
+                                        subtitle:
+                                            equipment.category != null
+                                                ? Text(equipment.category!)
+                                                : null,
                                         onTap: () async {
                                           Navigator.of(context).pop();
-
                                           final success =
                                               await characterViewModel
                                                   .addEquipmentToCharacter(
                                                     character.id,
-                                                    item.name,
+                                                    equipment.name,
                                                   );
 
                                           if (success && mounted) {
@@ -1029,7 +1162,7 @@ class _CharacterDetailPageState extends State<CharacterDetailPage>
                                             ).showSnackBar(
                                               SnackBar(
                                                 content: Text(
-                                                  'Added ${item.name} to inventory',
+                                                  'Added ${equipment.name} to inventory',
                                                 ),
                                               ),
                                             );
@@ -1066,6 +1199,7 @@ class _CharacterDetailPageState extends State<CharacterDetailPage>
               actions: [
                 TextButton(
                   onPressed: () {
+                    _debounce?.cancel(); // Cancel any pending debounce timer
                     Navigator.of(context).pop();
                   },
                   child: const Text('Cancel'),
@@ -1163,59 +1297,218 @@ class _CharacterDetailPageState extends State<CharacterDetailPage>
 
   void _showAddSpellDialog(Character character) {
     final TextEditingController spellController = TextEditingController();
-    final viewModel = Provider.of<CharacterViewModel>(context, listen: false);
+    final characterViewModel = Provider.of<CharacterViewModel>(
+      context,
+      listen: false,
+    );
+    final spellViewModel = SpellViewModel();
+    bool isManualEntry = true;
+    Timer? _debounce;
 
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Add Spell'),
-            content: TextField(
-              controller: spellController,
-              decoration: const InputDecoration(
-                labelText: 'Spell Name',
-                hintText: 'e.g., Fireball, Magic Missile, Cure Wounds',
-              ),
-              autofocus: true,
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () async {
-                  final spellName = spellController.text.trim();
-                  if (spellName.isEmpty) return;
-
-                  Navigator.of(context).pop();
-
-                  final success = await viewModel.addSpellToCharacter(
-                    character.id,
-                    spellName,
-                  );
-
-                  if (success && mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Added $spellName to spellbook')),
-                    );
-                  } else if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'Error adding spell: ${viewModel.errorMessage ?? "Unknown error"}',
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text('Add Spell'),
+              content:
+                  isManualEntry
+                      ? SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextField(
+                              controller: spellController,
+                              decoration: const InputDecoration(
+                                labelText: 'Spell Name',
+                                hintText:
+                                    'e.g., Fireball, Magic Missile, Cure Wounds',
+                              ),
+                              autofocus: true,
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  isManualEntry = false;
+                                  spellViewModel.loadSpells();
+                                });
+                              },
+                              child: const Text('Browse D&D Spells'),
+                            ),
+                          ],
                         ),
-                        backgroundColor: Colors.red,
+                      )
+                      : FutureBuilder(
+                        future: spellViewModel.loadSpells(),
+                        builder: (context, snapshot) {
+                          if (spellViewModel.isLoading) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+
+                          if (spellViewModel.errorMessage != null) {
+                            return Center(
+                              child: Text(
+                                'Error: ${spellViewModel.errorMessage}',
+                              ),
+                            );
+                          }
+
+                          if (spellViewModel.spells.isEmpty) {
+                            return const Center(child: Text('No spells found'));
+                          }
+
+                          // Filter spells based on search text
+                          final filteredSpells =
+                              spellController.text.isEmpty
+                                  ? spellViewModel.spells
+                                  : spellViewModel.spells
+                                      .where(
+                                        (spell) =>
+                                            spell.name.toLowerCase().contains(
+                                              spellController.text
+                                                  .toLowerCase(),
+                                            ),
+                                      )
+                                      .toList();
+
+                          return SizedBox(
+                            width: double.maxFinite,
+                            height: 300,
+                            child: Column(
+                              children: [
+                                TextField(
+                                  controller: spellController,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Search Spells',
+                                    prefixIcon: Icon(Icons.search),
+                                  ),
+                                  onChanged: (value) {
+                                    // Debounce logic: cancel previous timer
+                                    if (_debounce?.isActive ?? false) {
+                                      _debounce!.cancel();
+                                    }
+
+                                    // Set a new timer to update the UI after 500ms of inactivity
+                                    _debounce = Timer(
+                                      const Duration(milliseconds: 500),
+                                      () {
+                                        setState(() {
+                                          // This empty setState will trigger a rebuild with the new filtered results
+                                          // No need to call API here since we're filtering the already loaded spells
+                                        });
+                                      },
+                                    );
+                                  },
+                                ),
+                                const SizedBox(height: 8),
+                                Expanded(
+                                  child: ListView.builder(
+                                    itemCount: filteredSpells.length,
+                                    itemBuilder: (context, index) {
+                                      final spell = filteredSpells[index];
+                                      return ListTile(
+                                        title: Text(spell.name),
+                                        subtitle:
+                                            spell.level != null
+                                                ? Text(
+                                                  'Level ${spell.level} spell',
+                                                )
+                                                : null,
+                                        onTap: () async {
+                                          Navigator.of(context).pop();
+                                          final success =
+                                              await characterViewModel
+                                                  .addSpellToCharacter(
+                                                    character.id,
+                                                    spell.name,
+                                                  );
+
+                                          if (success && mounted) {
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  'Added ${spell.name} to spellbook',
+                                                ),
+                                              ),
+                                            );
+                                          } else if (mounted) {
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  'Error adding spell: ${characterViewModel.errorMessage ?? "Unknown error"}',
+                                                ),
+                                                backgroundColor: Colors.red,
+                                              ),
+                                            );
+                                          }
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      isManualEntry = true;
+                                    });
+                                  },
+                                  child: const Text('Enter Manual Spell'),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  }
-                },
-                child: const Text('Add'),
-              ),
-            ],
-          ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    _debounce?.cancel(); // Cancel any pending debounce timer
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Cancel'),
+                ),
+                if (isManualEntry)
+                  TextButton(
+                    onPressed: () async {
+                      final spellName = spellController.text.trim();
+                      if (spellName.isEmpty) return;
+
+                      Navigator.of(context).pop();
+
+                      final success = await characterViewModel
+                          .addSpellToCharacter(character.id, spellName);
+
+                      if (success && mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Added $spellName to spellbook'),
+                          ),
+                        );
+                      } else if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Error adding spell: ${characterViewModel.errorMessage ?? "Unknown error"}',
+                            ),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                    },
+                    child: const Text('Add'),
+                  ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 

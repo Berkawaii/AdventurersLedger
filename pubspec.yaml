@@ -64,6 +64,11 @@ dependencies:
   firebase_auth: ^5.6.2
   firebase_analytics: ^11.5.2
   cloud_firestore: ^5.6.11
+  
+  # Animation and Dice Rolling
+  lottie: ^3.3.1
+  d20: ^0.3.1+1
+  just_audio: ^0.10.4
   # Temporarily comment out for development
   # firebase_app_distribution: ^1.1.1
 
