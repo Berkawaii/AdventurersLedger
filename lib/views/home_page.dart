@@ -127,7 +127,10 @@ class _HomePageState extends State<HomePage> {
                 elevation: 6,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16.0),
-                  side: const BorderSide(color: AppTheme.secondaryColor, width: 1),
+                  side: const BorderSide(
+                    color: AppTheme.secondaryColor,
+                    width: 1,
+                  ),
                 ),
                 onPressed: () {
                   Navigator.push(
@@ -210,7 +213,10 @@ class CharacterListPage extends StatelessWidget {
                   Text(
                     'Error: ${viewModel.errorMessage}',
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 16, color: AppTheme.textLight),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: AppTheme.textLight,
+                    ),
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton.icon(
@@ -346,7 +352,10 @@ class CharacterListPage extends StatelessWidget {
                   ),
                   subtitle: Text(
                     '${character.race} ${character.characterClass} (Level ${character.level})',
-                    style: const TextStyle(color: AppTheme.textLight, fontSize: 14.0),
+                    style: const TextStyle(
+                      color: AppTheme.textLight,
+                      fontSize: 14.0,
+                    ),
                   ),
                   trailing: const Icon(
                     Icons.chevron_right,

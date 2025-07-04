@@ -98,9 +98,12 @@ class OverviewTab extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
-                      color: character.currentHitPoints <= character.hitPoints * 0.25
-                          ? Colors.red
-                          : character.currentHitPoints <= character.hitPoints * 0.5
+                      color:
+                          character.currentHitPoints <=
+                                  character.hitPoints * 0.25
+                              ? Colors.red
+                              : character.currentHitPoints <=
+                                  character.hitPoints * 0.5
                               ? Colors.orange
                               : AppTheme.textLight,
                     ),
@@ -164,7 +167,10 @@ class OverviewTab extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  StatColumnWidget(label: 'AC', value: character.armorClass.toString()),
+                  StatColumnWidget(
+                    label: 'AC',
+                    value: character.armorClass.toString(),
+                  ),
                   StatColumnWidget(
                     label: 'Prof',
                     value: '+${(character.level / 4).ceil() + 1}',
@@ -217,9 +223,10 @@ class OverviewTab extends StatelessWidget {
                           child: Icon(
                             Icons.star,
                             size: 40,
-                            color: isActive
-                                ? AppTheme.secondaryColor
-                                : Colors.grey.withOpacity(0.5),
+                            color:
+                                isActive
+                                    ? AppTheme.secondaryColor
+                                    : Colors.grey.withOpacity(0.5),
                           ),
                         ),
                       );

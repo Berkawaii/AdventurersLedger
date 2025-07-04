@@ -8,7 +8,10 @@ import '../../../view_models/character_view_model.dart';
 import '../../../view_models/equipment_view_model.dart';
 
 class EquipmentDialog {
-  static void showAddEquipmentDialog(BuildContext context, Character character) {
+  static void showAddEquipmentDialog(
+    BuildContext context,
+    Character character,
+  ) {
     final TextEditingController equipmentController = TextEditingController();
     final characterViewModel = Provider.of<CharacterViewModel>(
       context,
@@ -137,13 +140,14 @@ class EquipmentDialog {
                                           final success =
                                               await characterViewModel
                                                   .addEquipmentToCharacter(
-                                            character.id,
-                                            equipment.name,
-                                          );
+                                                    character.id,
+                                                    equipment.name,
+                                                  );
 
                                           if (success && context.mounted) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
                                               SnackBar(
                                                 content: Text(
                                                   'Added ${equipment.name} to inventory',
@@ -151,8 +155,9 @@ class EquipmentDialog {
                                               ),
                                             );
                                           } else if (context.mounted) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
                                               SnackBar(
                                                 content: Text(
                                                   'Error adding equipment: ${characterViewModel.errorMessage ?? "Unknown error"}',
@@ -226,7 +231,10 @@ class EquipmentDialog {
   }
 
   static void showRemoveEquipmentDialog(
-      BuildContext context, Character character, String equipment) {
+    BuildContext context,
+    Character character,
+    String equipment,
+  ) {
     final viewModel = Provider.of<CharacterViewModel>(context, listen: false);
 
     showDialog(
@@ -327,7 +335,8 @@ class EquipmentDialog {
                           _buildDetailRow("Category:", equipment.category!),
                         if (equipment.weight != null)
                           _buildDetailRow("Weight:", "${equipment.weight} lbs"),
-                        if (equipment.cost != null && equipment.costUnit != null)
+                        if (equipment.cost != null &&
+                            equipment.costUnit != null)
                           _buildDetailRow(
                             "Cost:",
                             "${equipment.cost} ${equipment.costUnit}",
@@ -375,7 +384,9 @@ class EquipmentDialog {
         } else if (context.mounted) {
           // Show error if equipment details not found
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Could not find details for $equipmentName")),
+            SnackBar(
+              content: Text("Could not find details for $equipmentName"),
+            ),
           );
         }
       });

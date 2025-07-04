@@ -4,11 +4,8 @@ class StatColumnWidget extends StatelessWidget {
   final String label;
   final String value;
 
-  const StatColumnWidget({
-    Key? key, 
-    required this.label, 
-    required this.value,
-  }) : super(key: key);
+  const StatColumnWidget({Key? key, required this.label, required this.value})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {

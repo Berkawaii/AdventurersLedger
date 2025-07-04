@@ -81,7 +81,7 @@ class _CharacterDetailPageState extends State<CharacterDetailPage>
             controller: _tabController,
             children: [
               OverviewTab(
-                character: character, 
+                character: character,
                 updateHP: _updateHP,
                 updateInspiration: _updateInspiration,
                 formatDate: _formatDate,

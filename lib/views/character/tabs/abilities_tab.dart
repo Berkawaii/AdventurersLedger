@@ -33,17 +33,23 @@ class AbilitiesTab extends StatelessWidget {
                       AbilityBlockWidget(
                         label: 'STR',
                         score: character.strength,
-                        modifier: character.getAbilityModifier(character.strength),
+                        modifier: character.getAbilityModifier(
+                          character.strength,
+                        ),
                       ),
                       AbilityBlockWidget(
                         label: 'DEX',
                         score: character.dexterity,
-                        modifier: character.getAbilityModifier(character.dexterity),
+                        modifier: character.getAbilityModifier(
+                          character.dexterity,
+                        ),
                       ),
                       AbilityBlockWidget(
                         label: 'CON',
                         score: character.constitution,
-                        modifier: character.getAbilityModifier(character.constitution),
+                        modifier: character.getAbilityModifier(
+                          character.constitution,
+                        ),
                       ),
                     ],
                   ),
@@ -54,17 +60,23 @@ class AbilitiesTab extends StatelessWidget {
                       AbilityBlockWidget(
                         label: 'INT',
                         score: character.intelligence,
-                        modifier: character.getAbilityModifier(character.intelligence),
+                        modifier: character.getAbilityModifier(
+                          character.intelligence,
+                        ),
                       ),
                       AbilityBlockWidget(
                         label: 'WIS',
                         score: character.wisdom,
-                        modifier: character.getAbilityModifier(character.wisdom),
+                        modifier: character.getAbilityModifier(
+                          character.wisdom,
+                        ),
                       ),
                       AbilityBlockWidget(
                         label: 'CHA',
                         score: character.charisma,
-                        modifier: character.getAbilityModifier(character.charisma),
+                        modifier: character.getAbilityModifier(
+                          character.charisma,
+                        ),
                       ),
                     ],
                   ),

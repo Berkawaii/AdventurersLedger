@@ -6,9 +6,9 @@ class AbilityBlockWidget extends StatelessWidget {
   final int modifier;
 
   const AbilityBlockWidget({
-    Key? key, 
-    required this.label, 
-    required this.score, 
+    Key? key,
+    required this.label,
+    required this.score,
     required this.modifier,
   }) : super(key: key);
 

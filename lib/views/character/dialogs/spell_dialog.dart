@@ -81,7 +81,8 @@ class SpellDialog {
                                       .where(
                                         (spell) =>
                                             spell.name.toLowerCase().contains(
-                                              spellController.text.toLowerCase(),
+                                              spellController.text
+                                                  .toLowerCase(),
                                             ),
                                       )
                                       .toList();
@@ -122,22 +123,26 @@ class SpellDialog {
                                       final spell = filteredSpells[index];
                                       return ListTile(
                                         title: Text(spell.name),
-                                        subtitle: spell.level != null
-                                            ? Text('Level ${spell.level} - ${spell.school ?? ""}')
-                                            : null,
+                                        subtitle:
+                                            spell.level != null
+                                                ? Text(
+                                                  'Level ${spell.level} - ${spell.school ?? ""}',
+                                                )
+                                                : null,
                                         onTap: () async {
                                           Navigator.of(context).pop();
 
                                           final success =
                                               await characterViewModel
                                                   .addSpellToCharacter(
-                                            character.id,
-                                            spell.name,
-                                          );
+                                                    character.id,
+                                                    spell.name,
+                                                  );
 
                                           if (success && context.mounted) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
                                               SnackBar(
                                                 content: Text(
                                                   'Added ${spell.name} to spellbook',
@@ -145,8 +150,9 @@ class SpellDialog {
                                               ),
                                             );
                                           } else if (context.mounted) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
                                               SnackBar(
                                                 content: Text(
                                                   'Error adding spell: ${characterViewModel.errorMessage ?? "Unknown error"}',
@@ -220,7 +226,10 @@ class SpellDialog {
   }
 
   static void showRemoveSpellDialog(
-      BuildContext context, Character character, String spell) {
+    BuildContext context,
+    Character character,
+    String spell,
+  ) {
     final viewModel = Provider.of<CharacterViewModel>(context, listen: false);
 
     showDialog(
