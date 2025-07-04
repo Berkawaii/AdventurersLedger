@@ -35,17 +35,37 @@ android {
             // Signing with the debug keys for now
             signingConfig = signingConfigs.getByName("debug")
             
+            // Disable minification to avoid R8 issues
+            isMinifyEnabled = false
+            isShrinkResources = false
+            
+            // Keep proguard rules for reference
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            
             // Firebase App Distribution temporarily removed
             // firebaseAppDistribution {
             //     releaseNotes = "Firebase App Distribution ile test sürümü"
             //     groups = "testers"
             // }
         }
+        debug {
+            // Disable minification for debug builds too
+            isMinifyEnabled = false
+            isShrinkResources = false
+        }
     }
 }
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    // Add only OkHttp dependency
+    implementation("com.squareup.okhttp:okhttp:2.7.5")
 }
 
 // App Distribution yapılandırmasını geçici olarak kaldırıldı
