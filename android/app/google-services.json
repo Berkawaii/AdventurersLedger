@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "99674628115",
+    "project_id": "adventurersledger",
+    "storage_bucket": "adventurersledger.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:99674628115:android:a4b9d047e3dc84554d1fe6",
+        "android_client_info": {
+          "package_name": "com.example.adventurers_ledger"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLnMDV-_nXeNSXkPouVVxnJWo_bJoRsYY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

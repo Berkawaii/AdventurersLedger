@@ -1,0 +1,4 @@
+firebaseAppDistribution {
+    groups = "testers"
+    releaseNotes = "Bu sürüm, Firebase App Distribution ile test için dağıtılmıştır."
+}

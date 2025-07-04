@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
+import 'firebase_options.dart';
 import 'constants/app_theme.dart';
 import 'view_models/character_view_model.dart';
 import 'view_models/class_view_model.dart';
@@ -17,8 +20,8 @@ void main() async {
   // Initialize Hive
   await Hive.initFlutter();
 
-  // Initialize Firebase - uncomment when ready to use Firebase
-  // await Firebase.initializeApp();
+  // Initialize Firebase
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(const MyApp());
 }
@@ -28,6 +31,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Firebase Analytics için
+    final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+    final FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(
+      analytics: analytics,
+    );
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => CharacterViewModel()),
@@ -40,6 +49,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Adventurer\'s Ledger',
         theme: AppTheme.fantasyTheme,
+        navigatorObservers: [observer], // Analytics için observer eklendi
         home: const HomePage(),
       ),
     );

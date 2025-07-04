@@ -1,0 +1,6 @@
+Bu sürüm, Firebase App Distribution ile test için dağıtılmıştır.
+
+Değişiklikler:
+- Firebase entegrasyonu eklendi
+- Analytics ve App Distribution desteği eklendi
+- Temel uygulama yapısı iyileştirildi

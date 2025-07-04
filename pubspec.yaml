@@ -60,6 +60,12 @@ dependencies:
   
   # Connectivity
   connectivity_plus: ^5.0.2
+  firebase_core: ^3.15.1
+  firebase_auth: ^5.6.2
+  firebase_analytics: ^11.5.2
+  cloud_firestore: ^5.6.11
+  # Temporarily comment out for development
+  # firebase_app_distribution: ^1.1.1
 
 dev_dependencies:
   flutter_test:
@@ -93,4 +99,6 @@ flutter:
     - assets/videos/
     - assets/fonts/
     - assets/sounds/
+    - assets/animations/
+    - assets/animations/
     - assets/animations/
