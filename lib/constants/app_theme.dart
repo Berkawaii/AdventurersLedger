@@ -3,10 +3,18 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   // Tema Renkleri (Logo-bazlı yeni tema renkleri)
-  static const Color primaryColor = Color(0xFFAD4134); // Kırmızımsı kahverengi (kitap rengi)
-  static const Color secondaryColor = Color(0xFFE39B25); // Altın/turuncu (logo yazısı)
-  static const Color accentColor = Color(0xFF303846); // Koyu gri-mavi (kalkan rengi)
-  static const Color backgroundDark = Color(0xFF0F1620); // Koyu lacivert-siyah (arka plan)
+  static const Color primaryColor = Color(
+    0xFFAD4134,
+  ); // Kırmızımsı kahverengi (kitap rengi)
+  static const Color secondaryColor = Color(
+    0xFFE39B25,
+  ); // Altın/turuncu (logo yazısı)
+  static const Color accentColor = Color(
+    0xFF303846,
+  ); // Koyu gri-mavi (kalkan rengi)
+  static const Color backgroundDark = Color(
+    0xFF0F1620,
+  ); // Koyu lacivert-siyah (arka plan)
   static const Color backgroundLight = Color(0xFFEEDFB4); // Krem/parşömen
   static const Color textDark = Color(0xFF303846); // Koyu gri-mavi
   static const Color textLight = Color(0xFFF2E8D5); // Açık krem
@@ -124,10 +132,7 @@ class AppTheme {
           color: textLight.withOpacity(0.6),
           fontSize: 16,
         ),
-        errorStyle: GoogleFonts.lato(
-          color: Colors.red.shade300,
-          fontSize: 14,
-        ),
+        errorStyle: GoogleFonts.lato(color: Colors.red.shade300, fontSize: 14),
       ),
     );
   }
@@ -234,7 +239,7 @@ class AppTheme {
       ),
     ),
   );
-  
+
   // Yeni Kart Dekorasyonu - Logo-inspired
   static BoxDecoration fancyCardDecoration = BoxDecoration(
     color: accentColor.withOpacity(0.85),
