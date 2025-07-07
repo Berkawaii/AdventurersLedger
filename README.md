@@ -50,10 +50,11 @@ Adventurer's Ledger is built using modern Flutter development practices:
 ## 📱 Screenshots
 
 <p align="center">
-  <img src="assets/screenshots/character_list.png" alt="Character List" width="200" />
+  <img src="assets/screenshots/homepage.png" alt="Character List" width="200" />
   <img src="assets/screenshots/character_creation.png" alt="Character Creation" width="200" /> 
-  <img src="assets/screenshots/character_details.png" alt="Character Details" width="200" />
+  <img src="assets/screenshots/monster_details.png" alt="Monster Details" width="200" />
   <img src="assets/screenshots/reference_guide.png" alt="Reference Guide" width="200" />
+  <img src="assets/screenshots/dice_roller.png" alt="Dice Roller" width="200" />
 </p>
 
 ## 🧙‍♂️ Contributing

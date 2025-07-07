@@ -1,50 +1,50 @@
 #!/bin/bash
 
-# Flutter projesi derleyip iOS için App Distribution'a gönderen script ./distributeios.sh
-# Temizle ve derle
-echo "Flutter projesini temizliyorum..."
+# Script to build Flutter project for iOS and send to App Distribution ./distributeios.sh
+# Clean and build
+echo "Cleaning Flutter project..."
 flutter clean
 
-echo "Bağımlılıkları yüklüyorum..."
+echo "Installing dependencies..."
 flutter pub get
 
-# iOS için build işlemini başlat
-echo "iOS IPA derliyorum..."
+# Start the iOS build process
+echo "Building iOS IPA..."
 
-# Pod kurulumunu güncelle
-echo "iOS Pod'larını güncelliyorum..."
+# Update Pod installation
+echo "Updating iOS Pods..."
 cd ios
 pod install --repo-update
 cd ..
 
-# Archive oluştur
-echo "iOS için archive oluşturuyorum..."
+# Create archive
+echo "Creating archive for iOS..."
 flutter build ios --release --no-codesign
 
-# Not: Firebase App Distribution için IPA dosyası gerekli
-# Xcode ile archive ve export işlemlerini otomatikleştirmek için:
-echo "Xcode ile IPA dosyası oluşturuluyor..."
+# Note: IPA file is required for Firebase App Distribution
+# To automate archive and export operations with Xcode:
+echo "Creating IPA file with Xcode..."
 cd ios
 xcodebuild -workspace Runner.xcworkspace -scheme Runner -sdk iphoneos -configuration Release archive -archivePath ../build/ios/archive/Runner.xcarchive
 xcodebuild -exportArchive -archivePath ../build/ios/archive/Runner.xcarchive -exportOptionsPlist ExportOptions.plist -exportPath ../build/ios/ipa
 
 cd ..
 
-# IPA dosyasının varlığını kontrol et
+# Check if IPA file exists
 IPA_PATH="build/ios/ipa/Runner.ipa"
 if [ ! -f "$IPA_PATH" ]; then
-    echo "Hata: IPA dosyası bulunamadı: $IPA_PATH"
-    echo "Not: IPA dosyası oluşturmak için Xcode'dan manuel olarak archive ve export işlemlerini yapmanız gerekebilir"
+    echo "Error: IPA file not found: $IPA_PATH"
+    echo "Note: You may need to manually archive and export from Xcode to create an IPA file"
     exit 1
 fi
 
-echo "IPA dosyası hazır: $IPA_PATH"
+echo "IPA file ready: $IPA_PATH"
 
-# Firebase App Distribution'a gönder
-echo "Firebase App Distribution'a IPA yükleniyor..."
+# Send to Firebase App Distribution
+echo "Uploading IPA to Firebase App Distribution..."
 firebase appdistribution:distribute "$IPA_PATH" \
-  --app "IOS_FIREBASE_APP_ID_BURAYA_GELECEK" \
+  --app "YOUR_IOS_FIREBASE_APP_ID_HERE" \
   --groups "testers" \
-  --release-notes "iOS Test Sürümü - $(date)"
+  --release-notes "iOS Test Version - $(date)"
 
-echo "iOS uygulaması Firebase App Distribution'a gönderildi!"
+echo "iOS application has been sent to Firebase App Distribution!"
