@@ -30,6 +30,7 @@ Adventurer's Ledger is built using modern Flutter development practices:
 - **Connectivity Awareness**: Data synchronization for offline use
 - **D&D 5e API Integration**: API connection for reference data
 - **Customizable Theming**: User interface suited to the fantasy RPG world
+- **Dice Roller**: Integrated dice simulator and results calculator
 
 ## 🚀 Installation
 
@@ -80,7 +81,7 @@ This project is licensed under the MIT License - see the `LICENSE` file for deta
 - **Adventure Journal**: Record your game sessions and keep track of your adventures
 - **Party Management**: Track party members and NPCs in your campaign
 - **Character Illustrations**: Customizable portraits to visualize your character
-- **Dice Roller**: Integrated dice simulator and results calculator
+
 
 ---
 
